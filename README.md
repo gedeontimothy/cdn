@@ -36,6 +36,24 @@ Starts a local development server at the address `http://127.0.1.1`.
 ```bash
 composer serve
 ```
+##### Local Domain
+You can generate the local domain name by running (as administrator mode) the following command:
+
+```shell
+php artisan app:local-domain
+```
+
+This command will configure the local domain names `cdn.net` and `www.cdn.net` for the IP address `127.0.1.1`.
+
+However, you can still modify the domain names to be generated for your chosen IP address. Just display the help for the command by running:
+
+```bash
+php artisan app:local-domain -h
+```
+
+> The domain name is stored in the file :
+> - _Sur Windows_ : `C:\Windows\System32\drivers\etc\hosts`
+> - _Sur Linux et MacOS_ : `/etc/hosts`
 
 ## Initialize data in the CDN database
 
