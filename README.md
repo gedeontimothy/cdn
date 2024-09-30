@@ -86,9 +86,12 @@ In the `app` configuration file, add the `file_init` key:
     ]
 ```
 
-<br/>
-<br/>
-<br/>
+Then run the following command to create the database data linked to the files in your folders
+
+```bash
+php artisan init-local-file
+```
+
 <br/>
 <br/>
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
