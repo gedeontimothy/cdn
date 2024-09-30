@@ -20,29 +20,29 @@ trait LinkResponse
 
 			$file = $link->file;
 			
-			// $req = Request::create([
-			// 	'link_id' => $link->id,
-			// 	'ip_address' => $request->ip(),
-			// 	'request_type' => $request->method(),
-			// 	'user_agent' => $request->userAgent(),
-			// 	'status' => '0',
-			// ]);
+			$req = Request::create([
+				'link_id' => $link->id,
+				'ip_address' => $request->ip(),
+				'request_type' => $request->method(),
+				'user_agent' => $request->userAgent(),
+				'status' => '0', // 0:pending  1:completed  2:failed
+			]);
 
 			if($link->is_expired()) {
-				// $req->status = '2';
-				// $req->save();
+				$req->status = '2';
+				$req->save();
 				return response(status : 410, headers : ['Content-Length' => 0, 'Content-Type' => $file->mime_type->name .';charset=UTF-8']);
 			}
 			else{
 				
-				return $this->responseFile($file, $request);
+				return $this->responseFile($file, $request, ['X-Link-Request' => '{"id" : ' . $req->id . '}']);
 				
 			}
 		}
 		return false;
 	}
 
-	public function responseFile($file, $request){
+	public function responseFile($file, $request, array $headers = []){
 
 		$content_type = $file->mime_type->name .';charset=UTF-8';
 
@@ -102,6 +102,10 @@ trait LinkResponse
 			$streamResponse->headers->set('Accept-Ranges', 'bytes');
 			// $streamResponse->headers->set('Content-Disposition', "attachment; filename=\"". $file->original_name . '.' . $file->extension . "\"");
 
+			if(count($headers) > 0)
+				$streamResponse->headers->add($headers);
+
+
 			// Si un Range est présent, répondre avec le code HTTP 206 (Partial Content)
 			if ($range) {
 				$streamResponse->setStatusCode(206); // HTTP 206 Partial Content
@@ -114,7 +118,7 @@ trait LinkResponse
 			return $streamResponse;
 		} 
 		else {
-			return response()->file($file->path, ['Content-Type' => $content_type]);
+			return response()->file($file->path, ['Content-Type' => $content_type, ...$headers]);
 		}
 	}
 

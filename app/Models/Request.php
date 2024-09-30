@@ -21,7 +21,7 @@ class Request extends Model
 		"ip_address",
 		"request_type",
 		"user_agent",
-		"status",
+		"status", // 0:pending  1:completed  2:failed
 	];
 
 	/**
