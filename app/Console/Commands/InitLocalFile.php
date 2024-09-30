@@ -13,6 +13,8 @@ use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File as BaseFile;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\Finder\SplFileInfo as SymfonySplFileInfo;
+use SplFileInfo;
 
 class InitLocalFile extends Command
 {
@@ -44,7 +46,7 @@ class InitLocalFile extends Command
 	public function handle()
 	{
 		if($this->argument('folder') && $this->argument('type')){
-			// dd($this->argument('folder'), $this->argument('type'));
+
 			if(is_dir($this->argument('folder')) && is_readable($this->argument('folder'))){
 				$this->make(
 					$this->argument('folder'),
@@ -60,7 +62,7 @@ class InitLocalFile extends Command
 					$this->argument('recursive-folder'),
 				);
 			}
-			// else // Error, folder error 
+			else $this->error(" Unable to access {$this->argument('folder')} folder, please check if : \n    - This folder exists.                      \n    - You have read rights to this folder.     ");
 		}
 		else{
 			foreach (self::getFolders() as $value) {
@@ -90,7 +92,7 @@ class InitLocalFile extends Command
 
 		$categories = array_map(fn ($arg) => Category::firstOrCreate(['name' => $arg]), $categories);
 
-		foreach ($dirs as $kk =>  $folder) { // file_put_contents(__DIR__ . '/r/dirs.txt', $kk);
+		foreach ($dirs as $kk =>  $folder) { 
 			// if($kk < 1) continue;
 
 			if(is_dir($folder) && is_readable($folder)){
@@ -101,7 +103,7 @@ class InitLocalFile extends Command
 
 				$user = self::getUser();
 
-				foreach ($files as $key => $file) { // file_put_contents(__DIR__ . '/r/dirs.txt', file_get_contents(__DIR__ . '/r/dirs.txt') . ', ' . $key);
+				foreach ($files as $key => $file) {
 					// if($key < 66) continue;
 					// dump($key);
 
@@ -175,6 +177,12 @@ class InitLocalFile extends Command
 		}
 	}
 
+	/**
+	 * Get user
+	 *
+	 * @return User
+	 * 
+	 */
 	protected static function getUser() : User {
 		return (User::where('email', env('COMMAND_LOCAL_FILE_USER_EMAIL', 'johndoe@mail.com'))->get()->first() ?? User::where('username', env('COMMAND_LOCAL_FILE_USER_USERNAME', 'johndoe'))->get()->first()) ?? User::create([
 			'person_id' => Person::create([
@@ -187,12 +195,22 @@ class InitLocalFile extends Command
 			'username' => env('COMMAND_LOCAL_FILE_USER_USERNAME', 'johndoe'),
 			'password' => Hash::make(env('COMMAND_LOCAL_FILE_USER_PASSWORD', '12345678')),
 			'is' => "0",
-			'email_verified_at' => env('COMMAND_LOCAL_FILE_USER_EMAIL_VERIFIED', 1) == 1 ? now() : null,
+			// 'email_verified_at' => env('COMMAND_LOCAL_FILE_USER_EMAIL_VERIFIED', 1) == 1 ? now() : null,
 		]);
 	}
 
-	public static function autoDetectType($mime, $file, $user){
-		// $mime->name
+	/**
+	 * Get file type
+	 *
+	 * @param \App\Models\MimeType $mime
+	 * @param \Symfony\Component\Finder\SplFileInfo|\SplFileInfo $file
+	 * @param \App\Models\User $user
+	 * 
+	 * @return string|null
+	 * 
+	 */
+	public static function autoDetectType(MimeType $mime, SymfonySplFileInfo|SplFileInfo $file, User $user){
+
 		return preg_match('/^' . preg_quote('application/vnd.openxmlformats-officedocument', '/') . '.*/', $mime->name) || $mime->name == 'application/msword' || $mime->name == 'application/pdf'
 			? 'document'
 			: (preg_match('/^' . preg_quote('font/', '/') . '.*/i', $mime->name)
@@ -214,48 +232,13 @@ class InitLocalFile extends Command
 		;
 	}
 
+	/**
+	 * Get folders
+	 *
+	 * @return array<array<mixed>>
+	 * 
+	 */
 	protected static function getFolders(){
-		return [
-			[
-				'folder' => 'C:\\Backup\\Pictures\\Templates Images\\Original',
-				'categories' => ['Original', 'Full', 'Template'],
-				'only-extension' => ['jpeg', 'jpg', 'png'],
-			],
-			[
-				'folder' => 'C:\\Backup\\Videos',
-				'categories' => ['Film'],
-				'only-extension' => ['mp4', 'avi', 'mkv'],
-			],
-			[
-				'folder' => ['C:\\Backup\\Music\\World', 'C:\\Backup\\Music\\Heaven'],
-				'categories' => ['Music'],
-				'only-extension' => ['mpga', 'mp2', 'mp2a', 'mp3', 'm2a', 'm3a', 'm4a', 'mp4a', 'oga', 'ogg', 'spx', 'weba', 'wav', 'flac', 'dts'],
-				'recursive-folder' => true,
-			],
-			[
-				'folder' => 'C:\\Backup\\Pictures\\Cover',
-				'categories' => ['Music', 'Cover'],
-			],
-			[
-				'folder' => 'C:\\xampp\\htdocs\\cdn-old\\storage\\files\\css',
-				'categories' => ['Code', 'Css'],
-			],
-			[
-				'folder' => 'C:\\xampp\\htdocs\\cdn-old\\storage\\files\\js',
-				'categories' => ['Code', 'Js'],
-			],
-			[
-				'folder' => 'C:\\xampp\\htdocs\\cdn-old\\storage\\files\\icons\\svg',
-				'categories' => ['Code', 'Svg', 'Icon', 'Not Colored'],
-			],
-			[
-				'folder' => 'C:\\xampp\\htdocs\\cdn-old\\storage\\files\\icons\\svg-color\\',
-				'categories' => ['Code', 'Svg', 'Icon', 'Colored'],
-			],
-			[
-				'folder' => 'C:\\xampp\\htdocs\\cdn-old\\storage\\files\\icons\\svg-modify\\',
-				'categories' => ['Code', 'Svg', 'Icon', 'Modified'],
-			],
-		];
+		return is_array(config('app.file_init')) ? config('app.file_init') : [];
 	}
 }
