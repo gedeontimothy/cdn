@@ -30,6 +30,9 @@
         }
     },
     "scripts": {
+        "win-serve" : "start /min .\\app\\bin\\start-windows-server.bat",
+        "linux-serve": "./app/bin/start-linux-server.sh",
+        "mac-serve": "./app/bin/start-linux-server.sh",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
