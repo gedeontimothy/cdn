@@ -1,3 +1,78 @@
+# Local CDN
+
+This project is an application built with the Laravel framework, dedicated to setting up a local CDN (Content Delivery Network) system. The goal is to provide an efficient solution for distributing static files (images, scripts, stylesheets, etc.) across a local network, thereby improving loading times and the performance of applications.
+
+## Installation and Setup
+
+Installs all the project dependencies defined in the `composer.json` file.
+
+```bash
+composer install
+```
+
+Copies the example file `.env.example` to `.env` for application configurations.
+
+```bash
+cp .env.example .env    # for Linux and MacOS
+copy .env.example .env  # for Windows
+```
+
+Generates an application key and adds it to the `.env` file.
+
+```bash
+php artisan key:generate
+```
+
+Executes the database migrations, creating the necessary tables.
+
+```bash
+php artisan migrate
+```
+
+Starts a local development server at the address `http://127.0.1.1`.
+
+> Note: You can configure the host in the `server.(bat|sh)` files located in the [app/bin/](app/bin/) directory.
+
+```bash
+composer serve
+```
+
+## Initialize data in the CDN database
+
+Start by configuring the folders where your files are located.
+In the `app` configuration file, add the `file_init` key:
+
+> Or you can also configure your folders directly in the method [`App\Console\Commands\InitLocalFile::getFolders`](app/Console/Commands/InitLocalFile.php)
+
+```php
+    // ...
+    'file_init' => [
+        [
+            // folder is required: string|array
+            'folder' => '/absolute_folder_path', // Or ['/absolute_folder_path_1', '/absolute_folder_path_2']
+
+            // categories are optional: array - default: []
+            'categories' => ['category1', 'categoryX'],
+
+            // only-extension is optional: array - default: []
+            'only-extension' => ['jpeg' /*, 'mp4', 'c', */],
+
+            // recursive-folder is optional: bool - default: false
+            'recursive-folder' => true,
+
+            // type is optional: string|callable - default: function autoTypeDetect(): string|null
+                // The autoTypeDetect function returns 'document', 'font', 'audio', 'image', 'video', 'text' or NULL as file types
+            'type' => 'file-type',
+        ],
+        // ...
+    ]
+```
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
