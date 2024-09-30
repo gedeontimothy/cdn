@@ -12,7 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
 		health: '/up',
 	)
 	->withMiddleware(function (Middleware $middleware) {
+		$middleware
+			->alias(aliases: [
+				// 'manager' => EnsureIsManager::class,
+			])
+		;
 	})
+	->withCommands([
+		__DIR__ . '/../app/Console/Commands',
+	])
 	->withExceptions(function (Exceptions $exceptions) {
 		//
 	})->create();
