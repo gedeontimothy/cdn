@@ -62,7 +62,6 @@ class InitLocalFile extends Command
 					$this->argument('recursive-folder'),
 				);
 			}
-			else $this->error(" Unable to access {$this->argument('folder')} folder, please check if : \n    - This folder exists.                      \n    - You have read rights to this folder.     ");
 			else $this->error(" Unable to access {$this->argument('folder')} folder, please check if : \n\n    - This folder exists. \n\n    - You have read rights to this folder. ");
 		}
 		else{
