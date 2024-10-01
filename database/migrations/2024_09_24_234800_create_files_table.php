@@ -36,6 +36,7 @@ return new class extends Migration
 			$table->dropForeign('files_user_id_foreign');
 			$table->dropForeign('files_type_id_foreign');
 			$table->dropForeign('files_mime_type_id_foreign');
+			$table->dropIndex('files_type_id_mime_type_id_path_size_original_name_extension_unique');
 		});
 		Schema::dropIfExists('files');
 	}

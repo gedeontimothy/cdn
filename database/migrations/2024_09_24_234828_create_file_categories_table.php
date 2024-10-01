@@ -16,6 +16,7 @@ return new class extends Migration
 			$table->foreignId('file_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
 			$table->foreignId('category_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
 			$table->timestamps();
+			$table->unique(['file_id', 'category_id']);
 		});
 	}
 
@@ -27,6 +28,7 @@ return new class extends Migration
 		Schema::table('file_categories', function (Blueprint $table) {
 			$table->dropForeign('file_categories_user_id_foreign');
 			$table->dropForeign('file_categories_category_id_foreign');
+			$table->dropIndex('file_categories_file_id_category_id_unique');
 		});
 		Schema::dropIfExists('file_categories');
 	}
