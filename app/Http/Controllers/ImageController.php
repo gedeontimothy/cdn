@@ -105,8 +105,8 @@ class ImageController extends Controller
 
 						if(is_writeable($path_name)) unlink($path_name);
 
-					// })->delay(now()->addHour());
-					})->delay(now()->addSeconds(20));
+					})->delay(now()->addHour());
+					// })->delay(now()->addSeconds(20));
 
 				}
 
