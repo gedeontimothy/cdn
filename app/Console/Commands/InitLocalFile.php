@@ -63,6 +63,7 @@ class InitLocalFile extends Command
 				);
 			}
 			else $this->error(" Unable to access {$this->argument('folder')} folder, please check if : \n    - This folder exists.                      \n    - You have read rights to this folder.     ");
+			else $this->error(" Unable to access {$this->argument('folder')} folder, please check if : \n\n    - This folder exists. \n\n    - You have read rights to this folder. ");
 		}
 		else{
 			foreach (self::getFolders() as $value) {
@@ -172,7 +173,7 @@ class InitLocalFile extends Command
 					$this->info("\n " . (count($dirs) > 1 ? "Dirs : [" . ($kk + 1) . "/" . count($dirs) . "] - " : '') . $file->getRealPath() . " [" . ($key + 1) . "/" . count($files) . "] - " . round((($key + 1) * 100) / count($files), 2) . '%');
 				}
 			}
-			else $this->error(" Unable to access $folder folder, please check if : \n    - This folder exists.                      \n    - You have read rights to this folder.     ");
+			else $this->error(" Unable to access $folder folder, please check if : \n\n    - This folder exists. \n\n    - You have read rights to this folder. ");
 
 		}
 	}
