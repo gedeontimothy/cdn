@@ -13,7 +13,7 @@ class LocalDomain extends Command
 	 */
 	protected $signature = 'app:local-domain
 	                        {--host=127.0.1.1 : The host address (ipv4)}
-	                        {--domain=* : Local domain name (Separate with "," for multiple domain names)}';
+	                        {--domain=* : Local domain name (default : [\'cdn.net\', \'www.cdn.net\'])}';
 
 	/**
 	 * The console command description.
@@ -34,14 +34,23 @@ class LocalDomain extends Command
 
 			$domains = count($this->option('domain')) > 0 ? $this->option('domain') : ['cdn.net', 'www.cdn.net'];
 	
-			$hosts_file_path = checkOS('windows')
-				? getenv('SystemRoot') . '\\System32\\drivers\\etc\\hosts'
-				: '/etc/hosts'
-			;
-	
-			if(check_console_admin_mode()){
+			$hosts_file_path = null;
+			
+			if(is_null($hosts_file_path) || !is_file($hosts_file_path)) {
 
-				if(is_file($hosts_file_path) && is_writeable($hosts_file_path) && is_readable($hosts_file_path)){
+				$this->error("\n The hosts file for your operating system was not found" . (!is_null($hosts_file_path) 
+					? ' (on the path ' . $hosts_file_path . ')' 
+					: ' (The path to your '. strtolower(PHP_OS_FAMILY) .' system\'s `hosts` file is not supported automatically, please provide your `hosts` file path in the `getHostsFilePath` method of the `App\Console\Commands\LocalDomain` command class)'
+				) . ".");
+
+				return;
+			}
+
+			$mode = check_console_admin_mode();
+
+			if($mode === true || is_null($mode)){
+
+				if(is_writeable($hosts_file_path) && is_readable($hosts_file_path)){
 
 					$host_content = file_get_contents($hosts_file_path);
 
@@ -85,10 +94,10 @@ class LocalDomain extends Command
 					}
 
 				}
-				else $this->error(" Unable to access $hosts_file_path file, please check if : \n\n    - This file exists. \n\n    - You have read and write rights to this file. ");
+				else $this->error("\n Unable to access $hosts_file_path file, please check if : \n\n    - This file exists. \n\n    - You have read and write rights to this file. ");
 
 			}
-			else $this->error(" Please run the command in " . (checkOS('windows') ? 'administrator' : 'super user') . " mode. ");
+			else $this->error("\n Please run the command in " . (checkOS('windows') ? 'administrator' : 'super user') . " mode. ");
 
 		}
 
@@ -132,5 +141,23 @@ class LocalDomain extends Command
 		}
 
 		return $hosts;
+	}
+
+	/**
+	 * Get hosts file path
+	 *
+	 * @return string|null
+	 * 
+	 */
+	public function getHostsFilePath() : string|null {
+
+		return checkOS('windows')
+			? getenv('SystemRoot') . '\\System32\\drivers\\etc\\hosts'
+			: (checkOS('linux') || checkOS('darwin')
+				? '/etc/hosts'
+				: null
+			)
+		;
+
 	}
 }
