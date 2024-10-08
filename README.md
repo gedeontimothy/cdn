@@ -31,7 +31,10 @@ php artisan migrate
 
 Starts a local development server at the address `http://127.0.1.1`.
 
-> Note: You can configure the host in the `server.(bat|sh)` files located in the [app/bin/](app/bin/) directory.
+> *Note:*
+>> You can configure the host in the `server-*-server.(bat|sh)` files located in the [app/bin/](app/bin/) directory.<br/>
+>> You can also start the server by running these server startup files without the console command.<br/>
+>> If you are on MacOS, your server startup file is [`server-linux-server.sh`](app/bin/start-linux-server.sh).
 
 ```bash
 composer serve
