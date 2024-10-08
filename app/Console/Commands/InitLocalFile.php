@@ -93,6 +93,7 @@ class InitLocalFile extends Command
 		$categories = array_map(fn ($arg) => Category::firstOrCreate(['name' => $arg]), $categories);
 
 		foreach ($dirs as $kk =>  $folder) { 
+			// file_put_contents(__DIR__ . '/r/dirs.txt', $kk);
 			// if($kk < 1) continue;
 
 			if(is_dir($folder) && is_readable($folder)){
@@ -104,6 +105,7 @@ class InitLocalFile extends Command
 				$user = self::getUser();
 
 				foreach ($files as $key => $file) {
+					// file_put_contents(__DIR__ . '/r/dirs.txt', file_get_contents(__DIR__ . '/r/dirs.txt') . ', ' . $key);
 					// if($key < 66) continue;
 					// dump($key);
 
