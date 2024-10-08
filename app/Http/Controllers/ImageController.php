@@ -59,10 +59,11 @@ class ImageController extends Controller
 	public function showRandom(Request $request){
 
 		$file = File::inRandomOrder()->where('type_id', 1)->take(1)->first();
-		// dd($file->path);
-		file_put_contents(__DIR__.'/d.txt', file_get_contents(__DIR__.'/d.txt') . $file->path . "\n\n");
-		if($file) return $this->responseFile($file, $request);
-		abort(404);
+
+		if($file)
+			return $this->responseFile($file, $request);
+
+			abort(404);
 
 	}
 
@@ -83,6 +84,9 @@ class ImageController extends Controller
 				? $index . '-' . $quality . '-' . uniqid() . random_int(0, 20000) . '.' . $spl_file_info->getExtension()
 				: sha1($index . '|' . $quality . '|' . $spl_file_info->getPathname() . ($request->has('resize') ? 'r' : '')) . '.' . $spl_file_info->getExtension()
 			;
+
+			if(!is_dir(storage_path('app/public/temp_images/')))
+				mkdir(storage_path('app/public/temp_images/'), recursive : true);
 
 			$new_file_path = storage_path('app/public/temp_images/'. $new_file_name);
 			
