@@ -4,10 +4,10 @@ if(!function_exists('check_console_admin_mode')){
 	/**
 	 * Check if the console is in administrator mode
 	 *
-	 * @return bool
+	 * @return bool|null
 	 * 
 	 */
-	function check_console_admin_mode() : bool{
+	function check_console_admin_mode() : bool|null {
 		if(checkOS('windows')){
 			exec('net session', result_code : $code);
 			return $code === 0;
@@ -16,7 +16,7 @@ if(!function_exists('check_console_admin_mode')){
 			exec('whoami', $output, $code);
 			return $code === 0 && trim($output[0]) === 'root';
 		}
-		return false;
+		return null;
 	}
 }
 
