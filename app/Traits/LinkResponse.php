@@ -28,10 +28,16 @@ trait LinkResponse
 				'status' => '0', // 0:pending  1:completed  2:failed
 			]);
 
+			$link->access_count += 1;
+			$link->save();
+
 			if($link->is_expired()) {
+
 				$req->status = '2';
 				$req->save();
+
 				return response(status : 410, headers : ['Content-Length' => 0, 'Content-Type' => $file->mime_type->name .';charset=UTF-8']);
+
 			}
 			else{
 				
