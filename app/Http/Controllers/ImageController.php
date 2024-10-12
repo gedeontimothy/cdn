@@ -109,7 +109,10 @@ class ImageController extends Controller
 
 						if(is_writeable($path_name)) unlink($path_name);
 
-					})->delay(now()->addHour());
+					})->delay(is_numeric($request->get('delay')) 
+						? now()->addMinutes((float) $request->get('delay'))
+						: now()->addHour()
+					);
 					// })->delay(now()->addSeconds(20));
 
 				}
