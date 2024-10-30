@@ -34,7 +34,7 @@ class LocalDomain extends Command
 
 			$domains = count($this->option('domain')) > 0 ? $this->option('domain') : ['cdn.net', 'www.cdn.net'];
 	
-			$hosts_file_path = null;
+			$hosts_file_path = $this->getHostsFilePath();
 			
 			if(is_null($hosts_file_path) || !is_file($hosts_file_path)) {
 
