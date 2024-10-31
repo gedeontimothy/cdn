@@ -141,6 +141,12 @@ class ImageController extends Controller
 	private function reduce_image_quality(string $source_file, string $destination_file, int $percentage_reduction, bool $resize = true){
 
 		if (!file_exists($source_file)) return false;
+
+		if(($size = (new SplFileInfo($source_file))->getSize()) > (6 * 1024000)){
+			$size_mo = $size / 1024000;
+			$memory_limit = 128 + ($size_mo + (($size_mo * 1221) / 100));
+			ini_set('memory_limit', ceil($memory_limit) . 'M');
+		}
 	
 		// Obtient les informations de l'image
 		list($width, $height, $image_type) = getimagesize($source_file);
