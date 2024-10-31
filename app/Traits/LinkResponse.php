@@ -128,7 +128,7 @@ trait LinkResponse
 		}
 	}
 
-	public function showBaseByOriginalNameAndExtension(string $value, string|array $ext = null, BaseRequest $request, callable $call = null, array $more_categories = []){
+	public function showBaseByOriginalNameAndExtension(string $value, string|array $ext = null, BaseRequest $request, callable $call = null, array $more_categories = [], array $headers = []){
 
 		$ext = is_string($ext) ? [$ext] : $ext;
 
@@ -161,7 +161,7 @@ trait LinkResponse
 
 		if($file){
 
-			return $this->responseFile($file, $request);
+			return $this->responseFile($file, $request, $headers);
 
 		}
 
