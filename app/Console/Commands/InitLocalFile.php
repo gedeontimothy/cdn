@@ -152,15 +152,24 @@ class InitLocalFile extends Command
 
 					$type_ = Type::firstOrCreate(['name' => $type]);
 
-					$file_ = File::firstOrCreate([
-						"user_id" => $user->id,
+					$unique_keys = [
 						"type_id" => $type_->id,
 						"mime_type_id" => $mime->id,
 						"path" => $file->getRealPath(),
 						"size" => $file->getSize(),
-						"name" => $type_->name . '-' . uniqid() . random_int(0, 20000),
 						"original_name" => $file->getBasename($ext == '' ? '' : ('.' . $ext)),
 						"extension" => $ext,
+					];
+
+					if(File::where($unique_keys)->exists()){
+						$this->warn("\n Already register - " . (count($dirs) > 1 ? "Dirs : [" . ($kk + 1) . "/" . count($dirs) . "] - " : '') . $file->getRealPath() . " [" . ($key + 1) . "/" . count($files) . "] - " . round((($key + 1) * 100) / count($files), 2) . '%');
+						continue;
+					}
+
+					$file_ = File::firstOrCreate([
+						"user_id" => $user->id,
+						"name" => $type_->name . '-' . uniqid() . random_int(0, 20000),
+						...$unique_keys
 					]);
 					if(!$this->option('disable-permanent-link')) {
 						Link::create([
