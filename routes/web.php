@@ -16,8 +16,10 @@ Route::get('/link/{key}', [ReadLinkController::class, 'show'])->name('show.link.
 
 Route::get('/css/{original_name}', [CssController::class, 'show'])->name('show.css')->where('original_name', '.*');
 Route::get('/js/{original_name}', [JsController::class, 'show'])->name('show.js')->where('original_name', '.*');
-Route::get('/icon/svg-color/{p}', fn($p) => to_route('show.svg', ['original_name' => $p, 'category' => 'colored']))->where('p', '.*');
-Route::get('/icon/svg/{original_name}', [SvgController::class, 'show'])->name('show.svg')->where('original_name', '.*');
+Route::middleware('cors.all')->group(function(){
+	Route::get('/icon/svg-color/{p}', fn($p) => to_route('show.svg', ['original_name' => $p, 'category' => 'colored']))->where('p', '.*');
+	Route::get('/icon/svg/{original_name}', [SvgController::class, 'show'])->name('show.svg')->where('original_name', '.*');
+});
 Route::get('/random/image', [ImageController::class, 'showRandom'])->name('show.random.image')->where('index', '.*');
 Route::get('/image/{quality}/{index}', [ImageController::class, 'showQuality'])->name('show.quality.image')->where(['quality' => '\d+', 'index' => '.*']);
 Route::get('/image/{index}', [ImageController::class, 'show'])->name('show.image')->where('index', '.*');

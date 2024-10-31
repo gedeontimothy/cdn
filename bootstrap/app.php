@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CorsMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
 		$middleware
 			->alias(aliases: [
 				'update.link.query' => UpdateLinkQueryMiddleware::class,
+				'cors.all' => CorsMiddleware::class,
 				// 'manager' => EnsureIsManager::class,
 			])
 		;

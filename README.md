@@ -92,7 +92,7 @@ In the `app` configuration file, add the `file_init` key:
 Then run the following command to create the database data linked to the files in your folders
 
 ```bash
-php artisan init-local-file
+php artisan app:init-local-file
 ```
 
 <br/>
