@@ -13,6 +13,7 @@ class SvgController extends Controller
 	use LinkResponse;
 
 	public function show(Request $request, $original_name){
+	public function iconShow(Request $request, $original_name){
 
 		$response = $this->showBaseByOriginalNameAndExtension($original_name, 'svg', $request);
 
